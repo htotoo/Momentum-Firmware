@@ -19,15 +19,16 @@ typedef struct WSBlockGeneric WSBlockGeneric;
 
 struct WSBlockGeneric {
     const char* protocol_name;
-    uint64_t data;
-    uint32_t id;
+    uint8_t channel;
     uint8_t data_count_bit;
     uint8_t battery_low;
-    uint8_t humidity;
-    uint32_t timestamp;
-    uint8_t channel;
     uint8_t btn;
+    uint8_t humidity;
+
+    uint32_t id;
+    uint32_t timestamp;
     float temp;
+    uint64_t data;
 };
 
 /**
