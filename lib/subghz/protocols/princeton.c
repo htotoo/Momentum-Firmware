@@ -31,7 +31,6 @@ struct SubGhzProtocolDecoderPrinceton {
     SubGhzBlockGeneric generic;
 
     uint32_t te;
-    uint32_t last_data;
     uint32_t guard_time;
 };
 
@@ -239,7 +238,6 @@ void subghz_protocol_decoder_princeton_reset(void* context) {
     furi_assert(context);
     SubGhzProtocolDecoderPrinceton* instance = context;
     instance->decoder.parser_step = PrincetonDecoderStepReset;
-    instance->last_data = 0;
 }
 
 void subghz_protocol_decoder_princeton_feed(void* context, bool level, uint32_t duration) {
@@ -272,8 +270,8 @@ void subghz_protocol_decoder_princeton_feed(void* context, bool level, uint32_t 
                 instance->decoder.parser_step = PrincetonDecoderStepSaveDuration;
                 if(instance->decoder.decode_count_bit ==
                    subghz_protocol_princeton_const.min_count_bit_for_found) {
-                    if((instance->last_data == instance->decoder.decode_data) &&
-                       instance->last_data) {
+                    if((instance->generic.data == instance->decoder.decode_data) &&
+                       instance->generic.data) {
                         instance->te /= (instance->decoder.decode_count_bit * 4 + 1);
 
                         instance->generic.data = instance->decoder.decode_data;
@@ -287,7 +285,6 @@ void subghz_protocol_decoder_princeton_feed(void* context, bool level, uint32_t 
                         if(instance->base.callback)
                             instance->base.callback(&instance->base, instance->base.context);
                     }
-                    instance->last_data = instance->decoder.decode_data;
                 }
                 instance->decoder.decode_data = 0;
                 instance->decoder.decode_count_bit = 0;
